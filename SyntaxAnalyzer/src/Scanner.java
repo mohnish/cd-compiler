@@ -19,9 +19,8 @@ public class Scanner {
 
    public Scanner(String fileName) throws FileNotFoundException {
       this.fileName = fileName;
-      //checking if the extension of the file is .c or not
       if (this.fileName.endsWith(".c") || this.fileName.endsWith(".C")) {
-         tokenize();//this function is used to tokenize the lines of code 
+         tokenize();
       } else {
          System.out.println("The file '" + this.fileName + "' has an unsupported file extension. "
                  + "Please use only files with '.c' extension.");
@@ -30,7 +29,7 @@ public class Scanner {
    }
 
    public Token getNextToken() {
-      //the counter variable is used as a counter to send the tokens
+      
       if (counter < token.size()) {
          Token finalToken = token.get(counter);
          counter++;
@@ -125,7 +124,7 @@ public class Scanner {
                token.add(new Token((short) 16, testString, actualFile.get(i).lineNumber));
             } else if (Character.isLetter(sampleChar[k])) {//test identifiers and keywords
 
-               while (Character.isLetterOrDigit(sampleChar[k])) {
+               while (k < sampleChar.length && (Character.isLetter(sampleChar[k]) || Character.isDigit(sampleChar[k]))) {
                   testString += sampleChar[k];
                   k++;
                }
