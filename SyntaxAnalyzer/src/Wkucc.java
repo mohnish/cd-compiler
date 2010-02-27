@@ -9,7 +9,7 @@ import java.io.*;
 
 public class Wkucc {
 
-   public static void main(String[] args) throws FileNotFoundException {
+   public static void main(String[] args) {
       System.out.println("----Start Analysis----\n");
       
          Scanner myScanner = null;
