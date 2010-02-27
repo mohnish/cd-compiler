@@ -83,7 +83,7 @@ public class Scanner {
                      if (charLoop + 1 < eachChar.length) {
                         if (eachChar[charLoop + 1] == '/') {
                            charLoop++;//to skip the ending forward slash of a comment
-                           //i.e. /* khfkdsfsd *'/'
+                           //i.e. /* Comment *'/'
                            isComment = false;
                         }
                      }

@@ -9,10 +9,18 @@ import java.io.*;
 public class SyntaxAnalyzer {
 
    public static void main(String[] args) throws FileNotFoundException, IOException {
-      System.out.println("**Lexical Analyzer**\n");
+      System.out.println("**Start Analysis**\n");
       try {
-         //creating new scanner object
-         Scanner myScanner = new Scanner(args[0]);
+         Scanner myScanner = null;
+         //Check: Number of arguments
+         if(args.length < 1){
+            System.out.println("Supply a file name.");
+         }else if(args.length > 1){
+            System.out.println("Too many arguments.");
+         }else {
+            myScanner = new Scanner(args[0]);
+         }
+         
          Token next;
          while ((next = myScanner.getNextToken()) != null) {
             switch (next.type) {
@@ -80,9 +88,6 @@ public class SyntaxAnalyzer {
 
             }
          }
-      }
-         catch (ArrayIndexOutOfBoundsException e) {
-         System.out.println("Supply a file name.");
       }
          catch (FileNotFoundException e) {
          System.out.println("No such file found. Make sure the file is available. ");
