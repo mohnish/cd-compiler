@@ -81,9 +81,9 @@ public class SyntaxAnalyzer {
             }
          }
       }
-//         catch (ArrayIndexOutOfBoundsException e) {
-//         System.out.println("Supply a file name. (with the extention '.c') ");
-//      }
+         catch (ArrayIndexOutOfBoundsException e) {
+         System.out.println("Supply a file name.");
+      }
          catch (FileNotFoundException e) {
          System.out.println("No such file found. Make sure the file is available. ");
       }
