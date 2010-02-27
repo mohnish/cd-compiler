@@ -4,30 +4,32 @@
  * @ID: 800606747
  * @Webmail: mohnish.thallavajhula631@wku.edu
  */
+
 import java.io.*;
 
 public class Wkucc {
 
-   public static void main(String[] args) throws FileNotFoundException, IOException {
+   public static void main(String[] args) {
       System.out.println("**Start Analysis**\n");
       try {
          Scanner myScanner = null;
          //Check: Number of arguments
-         if(args.length < 1){
+         if (args.length < 1) {
             System.out.println("Supply a file name.");
-         }else if(args.length > 1){
+
+         } else if (args.length > 1) {
             System.out.println("Too many arguments.");
-         }else {
+         } else {
             myScanner = new Scanner(args[0]);
          }
-         
+
          Token next;
          while ((next = myScanner.getNextToken()) != null) {
             switch (next.type) {
                case 1://Keyword
                   System.out.println("Keyword " + next.getLexeme() + " " + next.getLineNumber());
                   break;
-                  
+
                case 2://Identifier
                   System.out.println("Identifier " + next.getLexeme() + " " + next.getLineNumber());
                   break;
@@ -88,8 +90,7 @@ public class Wkucc {
 
             }
          }
-      }
-         catch (FileNotFoundException e) {
+      } catch (FileNotFoundException e) {
          System.out.println("No such file found. Make sure the file is available. ");
       }
 
