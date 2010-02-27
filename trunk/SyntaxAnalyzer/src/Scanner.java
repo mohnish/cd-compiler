@@ -128,16 +128,6 @@ public class Scanner {
                         break;
                      }
                   }
-//                  testString += sampleChar[k];
-//                  k++;
-//                  if(sampleChar[k] != '"'){
-//                     if(k+1 < sampleChar.length && sampleChar[k+1] != ')'){
-//                        testString += sampleChar[k];
-//                        k++;
-//                     }
-//                  }
-
-
                }
 
                token.add(new Token((short) 16, testString, actualFile.get(i).lineNumber));
