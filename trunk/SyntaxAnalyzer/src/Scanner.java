@@ -7,7 +7,6 @@
 
 import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
 
 public class Scanner {
 
@@ -17,7 +16,7 @@ public class Scanner {
    ArrayList<Token> token;
    int counter = 0;
 
-   public Scanner(String fileName) throws FileNotFoundException {
+   public Scanner(String fileName) {
       this.fileName = fileName;
       if (this.fileName.endsWith(".c") || this.fileName.endsWith(".C")) {
          tokenize();
@@ -29,7 +28,7 @@ public class Scanner {
    }
 
    public Token getNextToken() {
-      
+
       if (counter < token.size()) {
          Token finalToken = token.get(counter);
          counter++;
@@ -108,7 +107,6 @@ public class Scanner {
       }
 
       for (int i = 0; i < actualFile.size(); i++) {
-//         System.out.println(actualFile.get(i).eachLine + " " + actualFile.get(i).lineNumber);
          char[] sampleChar = actualFile.get(i).eachLine.toCharArray();
          String testString = "";
          for (int k = 0; k < sampleChar.length; k++) {
@@ -116,11 +114,32 @@ public class Scanner {
             //test string constants
             if (sampleChar[k] == '"') {
                k++;
-               while (k < sampleChar.length && sampleChar[k] != '"') {
-                  testString += sampleChar[k];
-                  k++;
+//               while (k < sampleChar.length && sampleChar[k] != '"') {
+               while (k < sampleChar.length) {
+
+                  if (sampleChar[k] != '"') {
+                     testString += sampleChar[k];
+                     k++;
+                  } else {
+                     if (k + 1 < sampleChar.length && sampleChar[k + 1] != ')') {
+                        testString += sampleChar[k];
+                        k++;
+                     } else {
+                        break;
+                     }
+                  }
+//                  testString += sampleChar[k];
+//                  k++;
+//                  if(sampleChar[k] != '"'){
+//                     if(k+1 < sampleChar.length && sampleChar[k+1] != ')'){
+//                        testString += sampleChar[k];
+//                        k++;
+//                     }
+//                  }
+
+
                }
-               
+
                token.add(new Token((short) 16, testString, actualFile.get(i).lineNumber));
             } else if (Character.isLetter(sampleChar[k])) {//test identifiers and keywords
 
@@ -129,7 +148,7 @@ public class Scanner {
                   k++;
                }
                if (isKeyword(testString)) {//keyword check
-                  
+
                   token.add(new Token((short) 1, testString, actualFile.get(i).lineNumber));
                   k--;
                } else {//identifier check
@@ -198,7 +217,7 @@ public class Scanner {
                token.add(new Token((short) 13, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '=' || sampleChar[k] == '>' || sampleChar[k] == '<' || sampleChar[k] == '!') {
                testString += sampleChar[k];
-               if (k+1 < sampleChar.length && sampleChar[k + 1] == '=') {
+               if (k + 1 < sampleChar.length && sampleChar[k + 1] == '=') {
                   testString += sampleChar[k + 1];
                   k++;
 //                  System.out.println("Relation Op " + testString+ " " + actualFile.get(i).lineNumber);
