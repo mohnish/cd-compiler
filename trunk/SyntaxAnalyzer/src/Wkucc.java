@@ -9,16 +9,17 @@ import java.io.*;
 
 public class Wkucc {
 
-   public static void main(String[] args) {
-      System.out.println("**Start Analysis**\n");
-      try {
+   public static void main(String[] args) throws FileNotFoundException {
+      System.out.println("----Start Analysis----\n");
+      
          Scanner myScanner = null;
          //Check: Number of arguments
          if (args.length < 1) {
-            System.out.println("Supply a file name.");
-
+            System.out.println("Please give a file name.");
+            System.exit(0);
          } else if (args.length > 1) {
             System.out.println("Too many arguments.");
+            System.exit(0);
          } else {
             myScanner = new Scanner(args[0]);
          }
@@ -90,9 +91,7 @@ public class Wkucc {
 
             }
          }
-      } catch (FileNotFoundException e) {
-         System.out.println("No such file found. Make sure the file is available. ");
-      }
+      
 
 
 
