@@ -114,7 +114,7 @@ public class Scanner {
             //test string constants
             if (sampleChar[k] == '"') {
                k++;
-//               while (k < sampleChar.length && sampleChar[k] != '"') {
+               
                while (k < sampleChar.length) {
 
                   if (sampleChar[k] != '"') {
@@ -142,7 +142,6 @@ public class Scanner {
                   token.add(new Token((short) 1, testString, actualFile.get(i).lineNumber));
                   k--;
                } else {//identifier check
-//                  System.out.println("Identifier: " + testString + " " + actualFile.get(i).lineNumber);
                   token.add(new Token((short) 2, testString, actualFile.get(i).lineNumber));
                   k--;
                }
@@ -154,70 +153,55 @@ public class Scanner {
                   k++;
                }//float check
                if (testString.contains(".")) {
-//                  System.out.println("Float: " + testString + " " + actualFile.get(i).lineNumber);
                   token.add(new Token((short) 3, testString, actualFile.get(i).lineNumber));
                   k--;
                } else {//integer check
-//                  System.out.println("Integer: " + testString + " " + actualFile.get(i).lineNumber);
                   token.add(new Token((short) 4, testString, actualFile.get(i).lineNumber));
                   k--;
                }
             } else if (sampleChar[k] == '+') {//operators  check
                testString += sampleChar[k];
-//               System.out.println("Addition Op " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 5, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '-') {
                testString += sampleChar[k];
-//               System.out.println("Subtraction Op " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 6, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '*') {
                testString += sampleChar[k];
-//               System.out.println("Multiplication Op " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 7, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '/') {
                testString += sampleChar[k];
-//               System.out.println("Division Op " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 8, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '{') {
                testString += sampleChar[k];
-//               System.out.println("BraceOpen " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 9, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '}') {
                testString += sampleChar[k];
-//               System.out.println("BraceClosed " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 10, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '#' || sampleChar[k] == '@' || sampleChar[k] == '$'
                     || sampleChar[k] == '`' || sampleChar[k] == '~' || sampleChar[k] == '%' || sampleChar[k] == '^'
                     || sampleChar[k] == '&' || sampleChar[k] == '-' || sampleChar[k] == '|' || sampleChar[k] == '?'
                     || sampleChar[k] == '\\') {
                testString += sampleChar[k];
-//               System.out.println("Error " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 15, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == ')') {
                testString += sampleChar[k];
-//               System.out.println("ParanthesisClosed " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 11, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '(') {
                testString += sampleChar[k];
-//               System.out.println("ParanthesisOpen " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 12, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == ';' || sampleChar[k] == '[' || sampleChar[k] == ']' || sampleChar[k] == ',' || sampleChar[k] == '=') {
                testString += sampleChar[k];
-//               System.out.println("Other " + testString+ " " + actualFile.get(i).lineNumber);
                token.add(new Token((short) 13, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '=' || sampleChar[k] == '>' || sampleChar[k] == '<' || sampleChar[k] == '!') {
                testString += sampleChar[k];
                if (k + 1 < sampleChar.length && sampleChar[k + 1] == '=') {
                   testString += sampleChar[k + 1];
                   k++;
-//                  System.out.println("Relation Op " + testString+ " " + actualFile.get(i).lineNumber);
                   token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
                } else if (sampleChar[k] == '<' || sampleChar[k] == '>') {
-//                  System.out.println("Relation Op "+  sampleChar[k]+ " " + actualFile.get(i).lineNumber);
                   token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
                }
                if (sampleChar[k] == '!') {
-//                     System.out.println("Error "+  sampleChar[k]+ " " + actualFile.get(i).lineNumber );
                   token.add(new Token((short) 15, testString, actualFile.get(i).lineNumber));
                }
 
