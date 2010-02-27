@@ -116,20 +116,20 @@ public class Scanner {
             //test string constants
             if (sampleChar[k] == '"') {
                k++;
-               while (sampleChar[k] != '"') {
+               while (k < sampleChar.length && sampleChar[k] != '"') {
                   testString += sampleChar[k];
                   k++;
                }
-//               System.out.println("String: " + testString + " " + actualFile.get(i).lineNumber);
+               
                token.add(new Token((short) 16, testString, actualFile.get(i).lineNumber));
             } else if (Character.isLetter(sampleChar[k])) {//test identifiers and keywords
 
-               while (k < sampleChar.length && (Character.isLetter(sampleChar[k]) || Character.isDigit(sampleChar[k]))) {
+               while (k < sampleChar.length && Character.isLetterOrDigit(sampleChar[k])) {
                   testString += sampleChar[k];
                   k++;
                }
                if (isKeyword(testString)) {//keyword check
-//                  System.out.println("Keyword: " + testString + " " + actualFile.get(i).lineNumber);
+                  
                   token.add(new Token((short) 1, testString, actualFile.get(i).lineNumber));
                   k--;
                } else {//identifier check
@@ -140,7 +140,7 @@ public class Scanner {
 
             } else if (Character.isDigit(sampleChar[k])) {
                //number check
-               while (Character.isDigit(sampleChar[k]) || sampleChar[k] == '.') {
+               while (k < sampleChar.length && (Character.isDigit(sampleChar[k]) || sampleChar[k] == '.')) {
                   testString += sampleChar[k];
                   k++;
                }//float check
@@ -198,7 +198,7 @@ public class Scanner {
                token.add(new Token((short) 13, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '=' || sampleChar[k] == '>' || sampleChar[k] == '<' || sampleChar[k] == '!') {
                testString += sampleChar[k];
-               if (sampleChar[k + 1] == '=') {
+               if (k+1 < sampleChar.length && sampleChar[k + 1] == '=') {
                   testString += sampleChar[k + 1];
                   k++;
 //                  System.out.println("Relation Op " + testString+ " " + actualFile.get(i).lineNumber);
