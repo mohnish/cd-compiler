@@ -110,6 +110,7 @@ public class Scanner {
          char[] sampleChar = actualFile.get(i).eachLine.toCharArray();
          String testString = "";
          for (int k = 0; k < sampleChar.length; k++) {
+            //START TOKENIZING
             testString = "";
             //test string constants
             if (sampleChar[k] == '"') {
@@ -131,7 +132,8 @@ public class Scanner {
                }
 
                token.add(new Token((short) 16, testString, actualFile.get(i).lineNumber));
-            } else if (Character.isLetter(sampleChar[k])) {//test identifiers and keywords
+            } else if (Character.isLetter(sampleChar[k])) {
+               //test identifiers and keywords
 
                while (k < sampleChar.length && Character.isLetterOrDigit(sampleChar[k])) {
                   testString += sampleChar[k];
@@ -189,20 +191,24 @@ public class Scanner {
             } else if (sampleChar[k] == '(') {
                testString += sampleChar[k];
                token.add(new Token((short) 12, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == ';' || sampleChar[k] == '[' || sampleChar[k] == ']' || sampleChar[k] == ',' || sampleChar[k] == '=') {
+            } else if (sampleChar[k] == ';' || sampleChar[k] == '[' || sampleChar[k] == ']'
+                    || sampleChar[k] == ',') {
                testString += sampleChar[k];
                token.add(new Token((short) 13, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '=' || sampleChar[k] == '>' || sampleChar[k] == '<' || sampleChar[k] == '!') {
                testString += sampleChar[k];
                if (k + 1 < sampleChar.length && sampleChar[k + 1] == '=') {
-                  testString += sampleChar[k + 1];
                   k++;
+                  testString += sampleChar[k];
                   token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
                } else if (sampleChar[k] == '<' || sampleChar[k] == '>') {
                   token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
                }
-               if (sampleChar[k] == '!') {
+               else if (sampleChar[k] == '!') {
                   token.add(new Token((short) 15, testString, actualFile.get(i).lineNumber));
+               }
+               else if (sampleChar[k] == '=') {
+                  token.add(new Token((short) 17, testString, actualFile.get(i).lineNumber));
                }
 
             }
