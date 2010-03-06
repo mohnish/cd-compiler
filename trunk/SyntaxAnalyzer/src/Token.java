@@ -9,17 +9,17 @@
 //the arraylist objects hold the type, lexeme, and the linenumber
 public class Token {
 
-   short type;
+   TokenTypes type;
    String lexeme;
    int lineNumber;
 
-   public Token(short type, String lexeme, int lineNumber) {
+   public Token(TokenTypes type, String lexeme, int lineNumber) {
       this.type = type;
       this.lexeme = lexeme;
       this.lineNumber = lineNumber;
    }
 
-   public short getType() {
+   public TokenTypes getType() {
       return type;
    }
 
