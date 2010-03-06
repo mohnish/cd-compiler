@@ -21,7 +21,8 @@ public class Scanner {
       if (this.fileName.endsWith(".c") || this.fileName.endsWith(".C")) {
          tokenize();
       } else {
-         System.out.println("The file '" + this.fileName + "' has an unsupported file extension. "
+         System.out.println("The file '" + this.fileName
+                 + "' has an unsupported file extension. "
                  + "Please use only files with '.c' extension.");
       }
 
@@ -60,9 +61,9 @@ public class Scanner {
          while ((fileContents = readContent.readLine()) != null) {
             lineNumber++;
             lineList.add(new Lines(fileContents, lineNumber));
-         }//added all the lines into the arraylist: lineList
+         }
+         //added all the lines into the arraylist: lineList
 
-//         actualFile = new ArrayList<Lines>();
          int actualLineNumber;
          String actualLine = "";
          for (int looper = 0; looper < lineList.size(); looper++) {
@@ -70,22 +71,13 @@ public class Scanner {
             eachChar = lineList.get(looper).eachLine.toCharArray();
             //checking for comments
             for (int charLoop = 0; charLoop < eachChar.length; charLoop++) {
-               if (eachChar[charLoop] == '/') {
-                  if (charLoop + 1 < eachChar.length) {
-                     if (eachChar[charLoop + 1] == '*') {
-                        isComment = true;
-                     }
-                  }
+               if (eachChar[charLoop] == '/' && charLoop + 1 < eachChar.length && eachChar[charLoop + 1] == '*') {
+                  isComment = true;
                }
                if (isComment) {
-                  if (eachChar[charLoop] == '*') {
-                     if (charLoop + 1 < eachChar.length) {
-                        if (eachChar[charLoop + 1] == '/') {
-                           charLoop++;//to skip the ending forward slash of a comment
-                           //i.e. /* Comment *'/'
-                           isComment = false;
-                        }
-                     }
+                  if (eachChar[charLoop] == '*' && charLoop + 1 < eachChar.length && eachChar[charLoop + 1] == '/') {
+                     charLoop++;
+                     isComment = false;
                   }
                } else {
                   actualLine = actualLine + eachChar[charLoop];
@@ -107,7 +99,7 @@ public class Scanner {
       }
 
       for (int i = 0; i < actualFile.size(); i++) {
-         char[] sampleChar = actualFile.get(i).eachLine.toCharArray();
+         final char[] sampleChar = actualFile.get(i).eachLine.toCharArray();
          String testString = "";
          for (int k = 0; k < sampleChar.length; k++) {
             //START TOKENIZING
@@ -115,7 +107,7 @@ public class Scanner {
             //test string constants
             if (sampleChar[k] == '"') {
                k++;
-               
+
                while (k < sampleChar.length) {
 
                   if (sampleChar[k] != '"') {
@@ -203,11 +195,9 @@ public class Scanner {
                   token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
                } else if (sampleChar[k] == '<' || sampleChar[k] == '>') {
                   token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
-               }
-               else if (sampleChar[k] == '!') {
+               } else if (sampleChar[k] == '!') {
                   token.add(new Token((short) 15, testString, actualFile.get(i).lineNumber));
-               }
-               else if (sampleChar[k] == '=') {
+               } else if (sampleChar[k] == '=') {
                   token.add(new Token((short) 17, testString, actualFile.get(i).lineNumber));
                }
 

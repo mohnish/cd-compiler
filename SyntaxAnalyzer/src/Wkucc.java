@@ -26,19 +26,23 @@ public class Wkucc {
       while ((next = myScanner.getNextToken()) != null) {
          switch (next.type) {
             case 1://Keyword
-               System.out.println("Keyword " + next.getLexeme() + " " + next.getLineNumber());
+               System.out.println("Keyword " + next.getLexeme() + " "
+                       + next.getLineNumber());
                break;
 
             case 2://Identifier
-               System.out.println("Identifier " + next.getLexeme() + " " + next.getLineNumber());
+               System.out.println("Identifier " + next.getLexeme() + " "
+                       + next.getLineNumber());
                break;
 
             case 3://Float
-               System.out.println("Float " + next.getLexeme() + " " + next.getLineNumber());
+               System.out.println("Float " + next.getLexeme() + " "
+                       + next.getLineNumber());
                break;
 
             case 4://Integer
-               System.out.println("Integer " + next.getLexeme() + " " + next.getLineNumber());
+               System.out.println("Integer " + next.getLexeme() + " "
+                       + next.getLineNumber());
                break;
 
             case 5://Addition Operator
