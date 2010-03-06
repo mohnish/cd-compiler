@@ -8,7 +8,6 @@
 public class Wkucc {
 
    public static void main(String[] args) {
-      System.out.println("----Start Analysis----\n");
 
       Scanner myScanner = null;
       //Check: Number of arguments
@@ -75,8 +74,20 @@ public class Wkucc {
             case LEFT_PARA://Open Paranthesis
                System.out.println("OpenParanthesis " + next.getLexeme() + " " + next.getLineNumber());
                break;
+            case RIGHT_SQUARE://ClosedSquare
+               System.out.println("ClosedSquare " + next.getLexeme() + " " + next.getLineNumber());
+               break;
+            case LEFT_SQUARE://OpenSquare
+               System.out.println("OpenSquare " + next.getLexeme() + " " + next.getLineNumber());
+               break;
             case OTHERS://Others
                System.out.println("Others " + next.getLexeme() + " " + next.getLineNumber());
+               break;
+            case COMMA://Comma
+               System.out.println("Comma " + next.getLexeme() + " " + next.getLineNumber());
+               break;
+            case SEMICOLON://Semicolon
+               System.out.println("Semicolon " + next.getLexeme() + " " + next.getLineNumber());
                break;
             case RELOP://Relation Op
                System.out.println("Relation Op " + next.getLexeme() + " " + next.getLineNumber());
@@ -88,13 +99,13 @@ public class Wkucc {
                System.out.println("STRING_CONSTANT " + next.getLexeme() + " " + next.getLineNumber());
                break;
             case ASSIGNMENT://AssignmentOp
-               System.out.println("AssignmentOp " + next.getLexeme() + " " + next.getLineNumber());
+               System.out.println("ASSIGNMENT " + next.getLexeme() + " " + next.getLineNumber());
                break;
             default:
-               System.out.println("");
+               System.out.println(" ");
                break;
          }
       }
-      System.out.println("\n----Analysis Complete----");
+
    }
 }
