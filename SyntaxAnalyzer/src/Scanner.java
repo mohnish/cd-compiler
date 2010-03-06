@@ -31,7 +31,7 @@ public class Scanner {
    public Token getNextToken() {
 
       if (counter < token.size()) {
-         Token finalToken = token.get(counter);
+         final Token finalToken = token.get(counter);
          counter++;
          return finalToken;
       } else {
@@ -123,7 +123,7 @@ public class Scanner {
                   }
                }
 
-               token.add(new Token((short) 16, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.STRING_CONSTANT, testString, actualFile.get(i).lineNumber));
             } else if (Character.isLetter(sampleChar[k])) {
                //test identifiers and keywords
 
@@ -133,10 +133,10 @@ public class Scanner {
                }
                if (isKeyword(testString)) {//keyword check
 
-                  token.add(new Token((short) 1, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.KEYWORD, testString, actualFile.get(i).lineNumber));
                   k--;
-               } else {//identifier check
-                  token.add(new Token((short) 2, testString, actualFile.get(i).lineNumber));
+               } else { //identifier check
+                  token.add(new Token(TokenTypes.IDENTIFIER, testString, actualFile.get(i).lineNumber));
                   k--;
                }
 
@@ -147,58 +147,58 @@ public class Scanner {
                   k++;
                }//float check
                if (testString.contains(".")) {
-                  token.add(new Token((short) 3, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.IDENTIFIER, testString, actualFile.get(i).lineNumber));
                   k--;
                } else {//integer check
-                  token.add(new Token((short) 4, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.INTEGER, testString, actualFile.get(i).lineNumber));
                   k--;
                }
             } else if (sampleChar[k] == '+') {//operators  check
                testString += sampleChar[k];
-               token.add(new Token((short) 5, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.ADDOP, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '-') {
                testString += sampleChar[k];
-               token.add(new Token((short) 6, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.SUBOP, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '*') {
                testString += sampleChar[k];
-               token.add(new Token((short) 7, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.MULOP, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '/') {
                testString += sampleChar[k];
-               token.add(new Token((short) 8, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.DIVOP, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '{') {
                testString += sampleChar[k];
-               token.add(new Token((short) 9, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.LEFT_CURLY, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '}') {
                testString += sampleChar[k];
-               token.add(new Token((short) 10, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.RIGHT_CURLY, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '#' || sampleChar[k] == '@' || sampleChar[k] == '$'
                     || sampleChar[k] == '`' || sampleChar[k] == '~' || sampleChar[k] == '%' || sampleChar[k] == '^'
                     || sampleChar[k] == '&' || sampleChar[k] == '-' || sampleChar[k] == '|' || sampleChar[k] == '?'
                     || sampleChar[k] == '\\') {
                testString += sampleChar[k];
-               token.add(new Token((short) 15, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.ERROR, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == ')') {
                testString += sampleChar[k];
-               token.add(new Token((short) 11, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.RIGHT_PARA, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '(') {
                testString += sampleChar[k];
-               token.add(new Token((short) 12, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.LEFT_PARA, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == ';' || sampleChar[k] == '[' || sampleChar[k] == ']'
                     || sampleChar[k] == ',') {
                testString += sampleChar[k];
-               token.add(new Token((short) 13, testString, actualFile.get(i).lineNumber));
+               token.add(new Token(TokenTypes.OTHERS, testString, actualFile.get(i).lineNumber));
             } else if (sampleChar[k] == '=' || sampleChar[k] == '>' || sampleChar[k] == '<' || sampleChar[k] == '!') {
                testString += sampleChar[k];
                if (k + 1 < sampleChar.length && sampleChar[k + 1] == '=') {
                   k++;
                   testString += sampleChar[k];
-                  token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.RELOP, testString, actualFile.get(i).lineNumber));
                } else if (sampleChar[k] == '<' || sampleChar[k] == '>') {
-                  token.add(new Token((short) 14, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.RELOP, testString, actualFile.get(i).lineNumber));
                } else if (sampleChar[k] == '!') {
-                  token.add(new Token((short) 15, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.ERROR, testString, actualFile.get(i).lineNumber));
                } else if (sampleChar[k] == '=') {
-                  token.add(new Token((short) 17, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.ASSIGNMENT, testString, actualFile.get(i).lineNumber));
                }
 
             }
@@ -209,8 +209,7 @@ public class Scanner {
    }
 
    boolean isKeyword(String tokenString) {
-      if (tokenString.equals("void") || tokenString.equals("main")
-              || tokenString.equals("return") || tokenString.equals("if")
+      if (tokenString.equals("void") ||  tokenString.equals("return") || tokenString.equals("if")
               || tokenString.equals("else") || tokenString.equals("while")) {
          return true;
       } else {
