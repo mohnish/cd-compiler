@@ -7,6 +7,7 @@
 
 import java.io.*;
 import java.util.*;
+import sun.security.krb5.internal.KDCOptions;
 
 public class Scanner {
 
@@ -66,9 +67,11 @@ public class Scanner {
 
          int actualLineNumber;
          String actualLine = "";
+
          for (int looper = 0; looper < lineList.size(); looper++) {
             actualLineNumber = looper + 1;
             eachChar = lineList.get(looper).eachLine.toCharArray();
+
             //checking for comments
             for (int charLoop = 0; charLoop < eachChar.length; charLoop++) {
                if (eachChar[charLoop] == '/' && charLoop + 1 < eachChar.length && eachChar[charLoop + 1] == '*') {
@@ -99,23 +102,21 @@ public class Scanner {
       }
 
       for (int i = 0; i < actualFile.size(); i++) {
-         final char[] sampleChar = actualFile.get(i).eachLine.toCharArray();
-         String testString = "";
-         for (int k = 0; k < sampleChar.length; k++) {
+         final char[] currentChar = actualFile.get(i).eachLine.toCharArray();
+         String tokenValue = "";
+         for (int k = 0; k < currentChar.length; k++) {
             //START TOKENIZING
-            testString = "";
+            tokenValue = "";
             //test string constants
-            if (sampleChar[k] == '"') {
+            if (currentChar[k] == '"') {
                k++;
-
-               while (k < sampleChar.length) {
-
-                  if (sampleChar[k] != '"') {
-                     testString += sampleChar[k];
+               while (k < currentChar.length) {
+                  if (currentChar[k] != '"') {
+                     tokenValue += currentChar[k];
                      k++;
                   } else {
-                     if (k + 1 < sampleChar.length && sampleChar[k + 1] != ')') {
-                        testString += sampleChar[k];
+                     if (k + 1 < currentChar.length && currentChar[k + 1] != ')') {
+                        tokenValue += currentChar[k];
                         k++;
                      } else {
                         break;
@@ -123,82 +124,126 @@ public class Scanner {
                   }
                }
 
-               token.add(new Token(TokenTypes.STRING_CONSTANT, testString, actualFile.get(i).lineNumber));
-            } else if (Character.isLetter(sampleChar[k])) {
+               token.add(new Token(TokenTypes.STRING_CONSTANT, tokenValue, actualFile.get(i).lineNumber));
+            } else if (Character.isLetter(currentChar[k])) {
                //test identifiers and keywords
-
-               while (k < sampleChar.length && Character.isLetterOrDigit(sampleChar[k])) {
-                  testString += sampleChar[k];
+               while (k < currentChar.length && Character.isLetterOrDigit(currentChar[k])) {
+                  tokenValue += currentChar[k];
                   k++;
                }
-               if (isKeyword(testString)) {//keyword check
+               if (isKeyword(tokenValue)) {//keyword check
 
-                  token.add(new Token(TokenTypes.KEYWORD, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.KEYWORD, tokenValue, actualFile.get(i).lineNumber));
                   k--;
                } else { //identifier check
-                  token.add(new Token(TokenTypes.IDENTIFIER, testString, actualFile.get(i).lineNumber));
+                  token.add(new Token(TokenTypes.IDENTIFIER, tokenValue, actualFile.get(i).lineNumber));
                   k--;
                }
 
-            } else if (Character.isDigit(sampleChar[k])) {
-               //number check
-               while (k < sampleChar.length && (Character.isDigit(sampleChar[k]) || sampleChar[k] == '.')) {
-                  testString += sampleChar[k];
-                  k++;
-               }//float check
-               if (testString.contains(".")) {
-                  token.add(new Token(TokenTypes.IDENTIFIER, testString, actualFile.get(i).lineNumber));
-                  k--;
-               } else {//integer check
-                  token.add(new Token(TokenTypes.INTEGER, testString, actualFile.get(i).lineNumber));
-                  k--;
+            } else if (Character.isDigit(currentChar[k])) {
+               //number starts with 0 then control enters this part
+               if (currentChar[k] == '0') {
+                  //enters this if the next char is a '.'
+                  if (k + 1 < currentChar.length && currentChar[k + 1] == '.') {
+                     //when the value contains a '.' it obviously is a float
+                     while (k < currentChar.length && (Character.isDigit(currentChar[k]) || currentChar[k] == '.')) {
+                        tokenValue += currentChar[k];
+                        k++;
+                     }
+                     token.add(new Token(TokenTypes.FLOAT, tokenValue, actualFile.get(i).lineNumber));
+                     k--;
+                  } //if the number has digits followed by 0 then the control enters
+                  //this part - everything in this token will be tokenizer as error
+                  else if (k + 1 < currentChar.length && Character.isDigit(currentChar[k + 1])) {
+                     while (k < currentChar.length && (Character.isDigit(currentChar[k]) || currentChar[k] == '.')) {
+                        tokenValue += currentChar[k];
+                        k++;
+                     }
+                     token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
+                     k--;
+                  }
+                  //if the number has characters followed by 0 then the control enters
+                  //this part - everything in this token will be tokenizer as error
+                  else if (k + 1 < currentChar.length && Character.isLetter(currentChar[k + 1])) {
+                     while (k < currentChar.length && Character.isLetterOrDigit(currentChar[k])) {
+                        tokenValue += currentChar[k];
+                        k++;
+                     }
+                     token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
+                     k--;
+                  } else {
+                     //if it is just a 0, then 0 is returned as integer without any error
+                     tokenValue = '0'+"";
+                     token.add(new Token(TokenTypes.INTEGER, tokenValue, actualFile.get(i).lineNumber));
+                  }
+               } else {
+                  //number doesnt start with 0
+                  while (k < currentChar.length && (Character.isDigit(currentChar[k]) || currentChar[k] == '.')) {
+                     tokenValue += currentChar[k];
+                     k++;
+                  }//float check
+                  if (tokenValue.contains(".")) {
+                     token.add(new Token(TokenTypes.FLOAT, tokenValue, actualFile.get(i).lineNumber));
+                     k--;
+                  } else {//integer check
+                     token.add(new Token(TokenTypes.INTEGER, tokenValue, actualFile.get(i).lineNumber));
+                     k--;
+                  }
                }
-            } else if (sampleChar[k] == '+') {//operators  check
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.ADDOP, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '-') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.SUBOP, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '*') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.MULOP, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '/') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.DIVOP, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '{') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.LEFT_CURLY, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '}') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.RIGHT_CURLY, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '#' || sampleChar[k] == '@' || sampleChar[k] == '$'
-                    || sampleChar[k] == '`' || sampleChar[k] == '~' || sampleChar[k] == '%' || sampleChar[k] == '^'
-                    || sampleChar[k] == '&' || sampleChar[k] == '-' || sampleChar[k] == '|' || sampleChar[k] == '?'
-                    || sampleChar[k] == '\\') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.ERROR, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == ')') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.RIGHT_PARA, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '(') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.LEFT_PARA, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == ';' || sampleChar[k] == '[' || sampleChar[k] == ']'
-                    || sampleChar[k] == ',') {
-               testString += sampleChar[k];
-               token.add(new Token(TokenTypes.OTHERS, testString, actualFile.get(i).lineNumber));
-            } else if (sampleChar[k] == '=' || sampleChar[k] == '>' || sampleChar[k] == '<' || sampleChar[k] == '!') {
-               testString += sampleChar[k];
-               if (k + 1 < sampleChar.length && sampleChar[k + 1] == '=') {
+            } else if (currentChar[k] == '+') {//operators  check
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.ADDOP, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '-') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.SUBOP, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '*') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.MULOP, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '/') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.DIVOP, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '{') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.LEFT_CURLY, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '}') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.RIGHT_CURLY, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '#' || currentChar[k] == '@' || currentChar[k] == '$'
+                    || currentChar[k] == '`' || currentChar[k] == '~' || currentChar[k] == '%' || currentChar[k] == '^'
+                    || currentChar[k] == '&' || currentChar[k] == '_' || currentChar[k] == '|' || currentChar[k] == '?'
+                    || currentChar[k] == '\\') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == ')') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.RIGHT_PARA, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '(') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.LEFT_PARA, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '[') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.LEFT_SQUARE, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == ']') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.RIGHT_SQUARE, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == ',') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.COMMA, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == ';') {
+               tokenValue += currentChar[k];
+               token.add(new Token(TokenTypes.SEMICOLON, tokenValue, actualFile.get(i).lineNumber));
+            } else if (currentChar[k] == '=' || currentChar[k] == '>' || currentChar[k] == '<' || currentChar[k] == '!') {
+               tokenValue += currentChar[k];
+               if (k + 1 < currentChar.length && currentChar[k + 1] == '=') {
                   k++;
-                  testString += sampleChar[k];
-                  token.add(new Token(TokenTypes.RELOP, testString, actualFile.get(i).lineNumber));
-               } else if (sampleChar[k] == '<' || sampleChar[k] == '>') {
-                  token.add(new Token(TokenTypes.RELOP, testString, actualFile.get(i).lineNumber));
-               } else if (sampleChar[k] == '!') {
-                  token.add(new Token(TokenTypes.ERROR, testString, actualFile.get(i).lineNumber));
-               } else if (sampleChar[k] == '=') {
-                  token.add(new Token(TokenTypes.ASSIGNMENT, testString, actualFile.get(i).lineNumber));
+                  tokenValue += currentChar[k];
+                  token.add(new Token(TokenTypes.RELOP, tokenValue, actualFile.get(i).lineNumber));
+               } else if (currentChar[k] == '<' || currentChar[k] == '>') {
+                  token.add(new Token(TokenTypes.RELOP, tokenValue, actualFile.get(i).lineNumber));
+               } else if (currentChar[k] == '!') {
+                  token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
+               } else if (currentChar[k] == '=') {
+                  token.add(new Token(TokenTypes.ASSIGNMENT, tokenValue, actualFile.get(i).lineNumber));
                }
 
             }
@@ -209,7 +254,7 @@ public class Scanner {
    }
 
    boolean isKeyword(String tokenString) {
-      if (tokenString.equals("void") ||  tokenString.equals("return") || tokenString.equals("if")
+      if (tokenString.equals("void") || tokenString.equals("return") || tokenString.equals("if")
               || tokenString.equals("else") || tokenString.equals("while")) {
          return true;
       } else {
