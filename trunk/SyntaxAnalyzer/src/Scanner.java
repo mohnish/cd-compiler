@@ -7,7 +7,6 @@
 
 import java.io.*;
 import java.util.*;
-import sun.security.krb5.internal.KDCOptions;
 
 public class Scanner {
 
@@ -115,15 +114,9 @@ public class Scanner {
                      tokenValue += currentChar[k];
                      k++;
                   } else {
-                     if (k + 1 < currentChar.length && currentChar[k + 1] != ')') {
-                        tokenValue += currentChar[k];
-                        k++;
-                     } else {
-                        break;
-                     }
+                     break;
                   }
                }
-
                token.add(new Token(TokenTypes.STRING_CONSTANT, tokenValue, actualFile.get(i).lineNumber));
             } else if (Character.isLetter(currentChar[k])) {
                //test identifiers and keywords
@@ -161,8 +154,7 @@ public class Scanner {
                      }
                      token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
                      k--;
-                  }
-                  //if the number has characters followed by 0 then the control enters
+                  } //if the number has characters followed by 0 then the control enters
                   //this part - everything in this token will be tokenizer as error
                   else if (k + 1 < currentChar.length && Character.isLetter(currentChar[k + 1])) {
                      while (k < currentChar.length && Character.isLetterOrDigit(currentChar[k])) {
@@ -173,7 +165,7 @@ public class Scanner {
                      k--;
                   } else {
                      //if it is just a 0, then 0 is returned as integer without any error
-                     tokenValue = '0'+"";
+                     tokenValue += currentChar[k];
                      token.add(new Token(TokenTypes.INTEGER, tokenValue, actualFile.get(i).lineNumber));
                   }
                } else {
@@ -183,9 +175,18 @@ public class Scanner {
                      k++;
                   }//float check
                   if (tokenValue.contains(".")) {
-                     token.add(new Token(TokenTypes.FLOAT, tokenValue, actualFile.get(i).lineNumber));
-                     k--;
-                  } else {//integer check
+                     //checking for trailing errors
+                     String test = tokenValue;
+                     char[] testChar = test.toCharArray();
+                     if (testChar[testChar.length - 1] == '0' && testChar[testChar.length - 2] == '.') {
+                        token.add(new Token(TokenTypes.FLOAT, tokenValue, actualFile.get(i).lineNumber));
+                        k--;
+                     } else{
+                        token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
+                     }
+
+                  } else {
+                     //integer check
                      token.add(new Token(TokenTypes.INTEGER, tokenValue, actualFile.get(i).lineNumber));
                      k--;
                   }
