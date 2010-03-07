@@ -104,20 +104,36 @@ public class Scanner {
          final char[] currentChar = actualFile.get(i).eachLine.toCharArray();
          String tokenValue = "";
          for (int k = 0; k < currentChar.length; k++) {
-            //START TOKENIZING
+            //**************************
+            //START TOKENIZING FROM HERE
+            //**************************            
             tokenValue = "";
+            boolean quoteEncountered = false;
             //test string constants
             if (currentChar[k] == '"') {
-               k++;
-               while (k < currentChar.length) {
-                  if (currentChar[k] != '"') {
-                     tokenValue += currentChar[k];
-                     k++;
-                  } else {
-                     break;
+               //a quote is encountered and the string starts
+               quoteEncountered = true;
+               k++;//advance to the next character
+               if (k < currentChar.length) {
+                  while (quoteEncountered) {
+                     if (k < currentChar.length) {
+                        if (currentChar[k] != '"') {
+                           tokenValue += currentChar[k];
+                           k++;
+                        } else {
+                           token.add(new Token(TokenTypes.STRING_CONSTANT, tokenValue, actualFile.get(i).lineNumber));
+                           quoteEncountered = false;
+                        }
+                     } else {
+                        //just to make sure that quote encountered
+                        token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
+                        k--;
+                        quoteEncountered = false;
+                     }
                   }
                }
-               token.add(new Token(TokenTypes.STRING_CONSTANT, tokenValue, actualFile.get(i).lineNumber));
+
+
             } else if (Character.isLetter(currentChar[k])) {
                //test identifiers and keywords
                while (k < currentChar.length && Character.isLetterOrDigit(currentChar[k])) {
@@ -181,7 +197,10 @@ public class Scanner {
                      if (testChar[testChar.length - 1] == '0' && testChar[testChar.length - 2] == '.') {
                         token.add(new Token(TokenTypes.FLOAT, tokenValue, actualFile.get(i).lineNumber));
                         k--;
-                     } else{
+                     } else if (testChar[testChar.length - 1] != '0') {
+                        //lo
+                        token.add(new Token(TokenTypes.FLOAT, tokenValue, actualFile.get(i).lineNumber));
+                     } else {
                         token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
                      }
 
