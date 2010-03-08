@@ -31,7 +31,7 @@ public class Scanner {
    public Token getNextToken() {
 
       if (counter < token.size()) {
-         final Token finalToken = token.get(counter);
+         Token finalToken = token.get(counter);
          counter++;
          return finalToken;
       } else {
@@ -89,7 +89,7 @@ public class Scanner {
             actualLine = "";
          }
          //END PARSE 1
-         //we now have the actual program as it is with the comments removed
+         //we now have the actual program, as it is, with the comments removed
          //and the line numbers preserved
 
       } catch (FileNotFoundException ex) {
@@ -104,9 +104,11 @@ public class Scanner {
          final char[] currentChar = actualFile.get(i).eachLine.toCharArray();
          String tokenValue = "";
          for (int k = 0; k < currentChar.length; k++) {
+
             //**************************
             //START TOKENIZING FROM HERE
-            //**************************            
+            //**************************
+
             tokenValue = "";
             boolean quoteEncountered = false;
             //test string constants
@@ -140,9 +142,29 @@ public class Scanner {
                   tokenValue += currentChar[k];
                   k++;
                }
-               if (isKeyword(tokenValue)) {//keyword check
-
-                  token.add(new Token(TokenTypes.KEYWORD, tokenValue, actualFile.get(i).lineNumber));
+               if (tokenValue.equalsIgnoreCase("int")) {
+                  //keyword check
+                  token.add(new Token(TokenTypes.KW_INT, tokenValue, actualFile.get(i).lineNumber));
+                  k--;
+               } else if (tokenValue.equalsIgnoreCase("else")) {
+                  //keyword check
+                  token.add(new Token(TokenTypes.KW_ELSE, tokenValue, actualFile.get(i).lineNumber));
+                  k--;
+               } else if (tokenValue.equalsIgnoreCase("if")) {
+                  //keyword check
+                  token.add(new Token(TokenTypes.KW_IF, tokenValue, actualFile.get(i).lineNumber));
+                  k--;
+               } else if (tokenValue.equalsIgnoreCase("float")) {
+                  token.add(new Token(TokenTypes.KW_FLOAT, tokenValue, actualFile.get(i).lineNumber));
+                  k--;
+               } else if (tokenValue.equalsIgnoreCase("void")) {
+                  token.add(new Token(TokenTypes.KW_VOID, tokenValue, actualFile.get(i).lineNumber));
+                  k--;
+               } else if (tokenValue.equalsIgnoreCase("return")) {
+                  token.add(new Token(TokenTypes.KW_RETURN, tokenValue, actualFile.get(i).lineNumber));
+                  k--;
+               } else if (tokenValue.equalsIgnoreCase("while")) {
+                  token.add(new Token(TokenTypes.KW_WHILE, tokenValue, actualFile.get(i).lineNumber));
                   k--;
                } else { //identifier check
                   token.add(new Token(TokenTypes.IDENTIFIER, tokenValue, actualFile.get(i).lineNumber));
@@ -272,15 +294,4 @@ public class Scanner {
       }
 
    }
-
-   boolean isKeyword(String tokenString) {
-      if (tokenString.equals("void") || tokenString.equals("return") || tokenString.equals("if")
-              || tokenString.equals("else") || tokenString.equals("while")) {
-         return true;
-      } else {
-         return false;
-      }
-   }
 }
-
-
