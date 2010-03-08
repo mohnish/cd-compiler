@@ -7,9 +7,8 @@
 
 public class Wkucc {
 
-   public static void main(String[] args) {
-
-      Scanner myScanner = null;
+   public static void main(String[] args) throws Exception {
+//      Scanner myScanner = null;
       //Check: Number of arguments
       if (args.length < 1) {
          System.out.println("Please give a file name.");
@@ -18,94 +17,11 @@ public class Wkucc {
          System.out.println("Too many arguments.");
          System.exit(0);
       } else {
-         myScanner = new Scanner(args[0]);
+         SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(args[0]);
+         syntaxAnalyzer.parse();
       }
-
-      Token next;
-      while ((next = myScanner.getNextToken()) != null) {
-         switch (next.type) {
-            case KEYWORD://Keyword
-               System.out.println("Keyword " + next.getLexeme() + " "
-                       + next.getLineNumber());
-               break;
-
-            case IDENTIFIER://Identifier
-               System.out.println("Identifier " + next.getLexeme() + " "
-                       + next.getLineNumber());
-               break;
-
-            case FLOAT://Float
-               System.out.println("Float " + next.getLexeme() + " "
-                       + next.getLineNumber());
-               break;
-
-            case INTEGER://Integer
-               System.out.println("Integer " + next.getLexeme() + " "
-                       + next.getLineNumber());
-               break;
-
-            case ADDOP://Addition Operator
-               System.out.println("Addition Op " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-
-            case SUBOP://Subtraction Operator
-               System.out.println("Subtraction Op " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-
-            case MULOP://Multiplication Operator
-               System.out.println("Multiplication Op " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-
-            case DIVOP://Division Operator
-               System.out.println("Division Op " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-
-            case LEFT_CURLY://OpenBrace
-               System.out.println("OpenBrace " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-
-            case RIGHT_CURLY://Closed Brace
-               System.out.println("CloseBrace " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-
-            case RIGHT_PARA://Closed Paranthesis
-               System.out.println("CloseParanthesis " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case LEFT_PARA://Open Paranthesis
-               System.out.println("OpenParanthesis " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case RIGHT_SQUARE://ClosedSquare
-               System.out.println("ClosedSquare " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case LEFT_SQUARE://OpenSquare
-               System.out.println("OpenSquare " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case OTHERS://Others
-               System.out.println("Others " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case COMMA://Comma
-               System.out.println("Comma " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case SEMICOLON://Semicolon
-               System.out.println("Semicolon " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case RELOP://Relation Op
-               System.out.println("Relation Op " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case ERROR://Error
-               System.out.println("Error " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case STRING_CONSTANT://StringConstant
-               System.out.println("STRING_CONSTANT " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            case ASSIGNMENT://AssignmentOp
-               System.out.println("ASSIGNMENT " + next.getLexeme() + " " + next.getLineNumber());
-               break;
-            default:
-               System.out.println(" ");
-               break;
-         }
-      }
-
+//      Token next;
+//      while ((next = myScanner.getNextToken()) != null) {
+//      }      
    }
 }
