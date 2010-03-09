@@ -7,7 +7,8 @@
 /* this class is used to create the token object and put the created objects
  * in an arraylist
  * the arraylist objects hold the type, lexeme, and the linenumber
-*/
+ */
+
 public class Token {
 
    TokenTypes type;
