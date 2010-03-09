@@ -8,7 +8,6 @@
 public class Wkucc {
 
    public static void main(String[] args) throws Exception {
-//      Scanner myScanner = null;
       //Check: Number of arguments
       if (args.length < 1) {
          System.out.println("Please give a file name.");
@@ -20,8 +19,5 @@ public class Wkucc {
          SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(args[0]);
          syntaxAnalyzer.parse();
       }
-//      Token next;
-//      while ((next = myScanner.getNextToken()) != null) {
-//      }      
    }
 }
