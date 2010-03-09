@@ -29,9 +29,10 @@ public class SyntaxAnalyzer {
          //report error for not being int/float/void
          System.out.println("ERROR on linenumber: " + currentToken.getLineNumber());
       }
-      while (currentToken.getType() == TokenTypes.KW_FLOAT
+      while (currentToken != null && (currentToken.getType() == TokenTypes.KW_FLOAT
               || currentToken.getType() == TokenTypes.KW_INT
-              || currentToken.getType() == TokenTypes.KW_VOID) {
+              || currentToken.getType() == TokenTypes.KW_VOID)) {
+//         System.out.println(currentToken.getLexeme());
          externalDeclaration();
       }
 
@@ -40,19 +41,34 @@ public class SyntaxAnalyzer {
    public void externalDeclaration() {
       //todo
       if (currentToken.getType() == TokenTypes.KW_INT) {
-         match(TokenTypes.KW_INT);
+//         match(TokenTypes.KW_INT);
+         currentToken = lex.getNextToken();
       } else if (currentToken.getType() == TokenTypes.KW_FLOAT) {
-         match(TokenTypes.KW_FLOAT);
+//         match(TokenTypes.KW_FLOAT);
+         currentToken = lex.getNextToken();
       } else if (currentToken.getType() == TokenTypes.KW_VOID) {
-         match(TokenTypes.KW_VOID);
+//         match(TokenTypes.KW_VOID);
+         currentToken = lex.getNextToken();
       }
-      match(TokenTypes.IDENTIFIER);
+//      match(TokenTypes.IDENTIFIER);
+//      System.out.println(currentToken.getType());
+      currentToken = lex.getNextToken();
       if (currentToken.getType() == TokenTypes.LEFT_PARA) {
-         functionDefinition();
+         lex.decrementCounter();
+         lex.decrementCounter();
+         lex.decrementCounter();
+         currentToken = lex.getNextToken();
+//         System.out.println(currentToken.getLexeme());
+         functionDefinitionHeader();
       } else if (currentToken.getType() == TokenTypes.COMMA
               || currentToken.getType() == TokenTypes.SEMICOLON
               || currentToken.getType() == TokenTypes.ASSIGNMENT
               || currentToken.getType() == TokenTypes.LEFT_SQUARE) {
+         lex.decrementCounter();
+         lex.decrementCounter();
+         lex.decrementCounter();
+         currentToken = lex.getNextToken();
+//         System.out.println(currentToken.getLexeme()+lex.counter);
          variableDeclaration();
       } else {
          //report error
@@ -60,22 +76,35 @@ public class SyntaxAnalyzer {
       }
    }
 
+   public void funtion() {
+   }
+
    public void functionDefinition() {
-      functionDefinitionHeader();
+//       else {
+//         //Error reporting
+//         System.out.println("ERROR on linenumber: " + currentToken.getLineNumber());
+//      }
+   }
+
+   public void functionDefinitionHeader() {
+
+//            System.out.println("entered function def hesde");
+      match(currentToken.getType());
+//            currentToken=lex.getNextToken();
+      match(TokenTypes.IDENTIFIER);
+//            System.out.println(currentToken.getLexeme());
+      match(TokenTypes.LEFT_PARA);
+//            System.out.println(currentToken.getLexeme());
+      parametersDeclarationList();
+      match(TokenTypes.RIGHT_PARA);
       if (currentToken.getType() == TokenTypes.SEMICOLON) {
          functionDeclaration();
       } else if (currentToken.getType() == TokenTypes.LEFT_CURLY) {
          functionBody();
-      } else {
-         //Error reporting
-         System.out.println("ERROR on linenumber: " + currentToken.getLineNumber());
       }
-   }
 
-   public void functionDefinitionHeader() {
-      match(TokenTypes.LEFT_PARA);
-      parametersDeclaration();
-      match(TokenTypes.RIGHT_PARA);
+
+
    }
 
    public void functionDeclaration() {
@@ -101,7 +130,6 @@ public class SyntaxAnalyzer {
    }
 
    public void identifierList() {
-      //todo
       identifierDefinition();
       while (currentToken.getType() == TokenTypes.COMMA) {
          match(TokenTypes.COMMA);
@@ -135,19 +163,27 @@ public class SyntaxAnalyzer {
       //todo
       variableDeclaration();
       while (currentToken.getType() == TokenTypes.KW_INT || currentToken.getType() == TokenTypes.KW_FLOAT) {
+//         currentToken = lex.getNextToken();
          variableDeclaration();
       }
    }
 
    public void parametersDeclaration() {
-      parametersDeclarationList();
+      if (currentToken.getType() == TokenTypes.KW_FLOAT || currentToken.getType() == TokenTypes.KW_INT) {
+         parametersDeclarationList();
+      } else {
+         match(TokenTypes.RIGHT_PARA);
+      }
 
    }
 
    public void parametersDeclarationList() {
       if (currentToken.getType() == TokenTypes.KW_FLOAT || currentToken.getType() == TokenTypes.KW_INT) {
+
          parametersDeclarationSpecification();
          while (currentToken.getType() == TokenTypes.COMMA) {
+            match(TokenTypes.COMMA);
+
             parametersDeclarationSpecification();
          }
       }
@@ -161,12 +197,24 @@ public class SyntaxAnalyzer {
       while (currentToken.getType() == TokenTypes.LEFT_SQUARE) {
          match(TokenTypes.LEFT_SQUARE);
          match(TokenTypes.RIGHT_SQUARE);
+         parametersDeclarationSpecification();
       }
    }
 
    public void statementList() {
-      //todo
-      statement();
+
+      if ((currentToken.getType() == TokenTypes.KW_RETURN
+              || currentToken.getType() == TokenTypes.KW_WHILE
+              || currentToken.getType() == TokenTypes.KW_IF
+              || currentToken.getType() == TokenTypes.LEFT_CURLY
+              || currentToken.getType() == TokenTypes.LEFT_PARA
+              || currentToken.getType() == TokenTypes.IDENTIFIER
+              || currentToken.getType() == TokenTypes.ADDOP
+              || currentToken.getType() == TokenTypes.STRING_CONSTANT
+              || currentToken.getType() == TokenTypes.INTEGER
+              || currentToken.getType() == TokenTypes.FLOAT)) {
+         statement();
+      }
       while (currentToken.getType() == TokenTypes.KW_RETURN
               || currentToken.getType() == TokenTypes.KW_WHILE
               || currentToken.getType() == TokenTypes.KW_IF
@@ -234,14 +282,16 @@ public class SyntaxAnalyzer {
 
    public void simpleExpression() {
       term();
-      while (currentToken.getType() == TokenTypes.ADDOP) {
+      while (currentToken.getType() == TokenTypes.ADDOP || currentToken.getType() == TokenTypes.SUBOP) {
+         match(currentToken.getType());
          term();
       }
    }
 
    public void term() {
       factor();
-      while (currentToken.getType() == TokenTypes.MULOP) {
+      while (currentToken.getType() == TokenTypes.MULOP || currentToken.getType() == TokenTypes.DIVOP) {
+         match(currentToken.getType());
          factor();
       }
    }
@@ -251,32 +301,35 @@ public class SyntaxAnalyzer {
          match(TokenTypes.LEFT_PARA);
          expression();
          match(TokenTypes.RIGHT_PARA);
-      } else if (currentToken.getType() == TokenTypes.ADDOP) {
-         match(TokenTypes.ADDOP);
+      } else if (currentToken.getType() == TokenTypes.ADDOP || currentToken.getType() == TokenTypes.SUBOP) {
+         match(currentToken.getType());
          factor();
       } else if (currentToken.getType() == TokenTypes.IDENTIFIER) {
          match(TokenTypes.IDENTIFIER);
-         match(TokenTypes.LEFT_PARA);
-         if (currentToken.getType() == TokenTypes.LEFT_CURLY
-                 || currentToken.getType() == TokenTypes.ADDOP
-                 || currentToken.getType() == TokenTypes.IDENTIFIER
-                 || currentToken.getType() == TokenTypes.STRING_CONSTANT
-                 || currentToken.getType() == TokenTypes.INTEGER
-                 || currentToken.getType() == TokenTypes.FLOAT) {
-            expressionList();
+         if (currentToken.getType() == TokenTypes.LEFT_PARA) {
+            match(TokenTypes.LEFT_PARA);
+            if (currentToken.getType() == TokenTypes.LEFT_CURLY
+                    || currentToken.getType() == TokenTypes.ADDOP
+                    || currentToken.getType() == TokenTypes.IDENTIFIER
+                    || currentToken.getType() == TokenTypes.STRING_CONSTANT
+                    || currentToken.getType() == TokenTypes.INTEGER
+                    || currentToken.getType() == TokenTypes.FLOAT) {
+               expressionList();
+            }
+            match(TokenTypes.RIGHT_PARA);
+         } else if (currentToken.getType() == TokenTypes.LEFT_SQUARE) {
+            factorL();
          }
-         match(TokenTypes.RIGHT_PARA);
+
       } else if (currentToken.getType() == TokenTypes.INTEGER
               || currentToken.getType() == TokenTypes.FLOAT
               || currentToken.getType() == TokenTypes.STRING_CONSTANT) {
-         constant();
-      } else if (currentToken.getType() == TokenTypes.IDENTIFIER) {
-         factorL();
+//         constant();
+         match(currentToken.getType());
       }
    }
 
    public void factorL() {
-      match(TokenTypes.IDENTIFIER);
       while (currentToken.getType() == TokenTypes.LEFT_SQUARE) {
          match(TokenTypes.LEFT_SQUARE);
          expression();
@@ -300,13 +353,13 @@ public class SyntaxAnalyzer {
       }
    }
 
-   public void expressionList(){
+   public void expressionList() {
       expression();
-      while(currentToken.getType() == TokenTypes.SEMICOLON){
+      while (currentToken.getType() == TokenTypes.COMMA) {
+         match(TokenTypes.COMMA);
          expression();
       }
    }
-   
 
    // match the currentToken against the tokenType specified
    // and advance to the next token
@@ -316,7 +369,7 @@ public class SyntaxAnalyzer {
          return false;
       }
       if (tokenType == currentToken.getType()) {
-         System.out.println(currentToken.getLexeme()+ " " + currentToken.getType() + " " + currentToken.getLineNumber());
+         System.out.println(currentToken.getLexeme() + " " + currentToken.getType() + " " + currentToken.getLineNumber());
          currentToken = lex.getNextToken();
          return true;
       } else {

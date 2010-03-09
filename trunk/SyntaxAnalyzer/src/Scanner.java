@@ -29,13 +29,18 @@ public class Scanner {
    }
 
    public Token getNextToken() {
-
       if (counter < token.size()) {
          Token finalToken = token.get(counter);
          counter++;
          return finalToken;
       } else {
          return null;
+      }
+   }
+
+   public void decrementCounter() {
+      if(counter > 0){
+         counter -= 1;
       }
    }
 
