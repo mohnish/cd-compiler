@@ -39,7 +39,7 @@ public class Scanner {
    }
 
    public void decrementCounter() {
-      if(counter > 0){
+      if (counter > 0) {
          counter -= 1;
       }
    }
@@ -143,7 +143,7 @@ public class Scanner {
 
             } else if (Character.isLetter(currentChar[k])) {
                //test identifiers and keywords
-               while (k < currentChar.length && Character.isLetterOrDigit(currentChar[k])) {
+               while (k < currentChar.length && (Character.isLetterOrDigit(currentChar[k]) || currentChar[k] == '_')) {
                   tokenValue += currentChar[k];
                   k++;
                }
@@ -257,7 +257,7 @@ public class Scanner {
                token.add(new Token(TokenTypes.RIGHT_CURLY, tokenValue, actualFile.get(i).lineNumber));
             } else if (currentChar[k] == '#' || currentChar[k] == '@' || currentChar[k] == '$'
                     || currentChar[k] == '`' || currentChar[k] == '~' || currentChar[k] == '%' || currentChar[k] == '^'
-                    || currentChar[k] == '&' || currentChar[k] == '_' || currentChar[k] == '|' || currentChar[k] == '?'
+                    || currentChar[k] == '&' || currentChar[k] == '|' || currentChar[k] == '?'
                     || currentChar[k] == '\\') {
                tokenValue += currentChar[k];
                token.add(new Token(TokenTypes.ERROR, tokenValue, actualFile.get(i).lineNumber));
