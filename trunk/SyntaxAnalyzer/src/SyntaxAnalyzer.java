@@ -167,7 +167,6 @@ public class SyntaxAnalyzer {
       while (currentToken.getType() == TokenTypes.LEFT_SQUARE) {
          match(TokenTypes.LEFT_SQUARE);
          match(TokenTypes.RIGHT_SQUARE);
-//         parametersDeclarationSpecification();
       }
    }
 
