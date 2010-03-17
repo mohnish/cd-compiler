@@ -1,3 +1,9 @@
+/*
+ *
+ * @author: Mohnish Thallavajhula
+ * @ID: 800606747
+ * @Webmail: mohnish.thallavajhula631@wku.edu
+ */
 
 public enum TokenTypes {
 
